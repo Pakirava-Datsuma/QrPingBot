@@ -1,0 +1,4 @@
+.idea/
+target/
+/src/main/resources/bot.token
+/src/main/resources/chat.id
