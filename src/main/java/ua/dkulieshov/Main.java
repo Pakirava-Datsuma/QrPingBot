@@ -11,6 +11,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.http.HttpResponse.BodySubscribers;
 import java.nio.charset.StandardCharsets;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 public class Main {
 
@@ -19,15 +21,13 @@ public class Main {
   public static final String CHAT_ID = loadStringFromFile(CHAT_ID_FILE);
   public static final String BOT_TOKEN_FILE = "bot.token";
   public static final String BOT_TOKEN = loadStringFromFile(BOT_TOKEN_FILE);
-  public static final String URL_PREFIX =
+  public static final String BOT_COMMAND_URL_PREFIX =
       String.format("https://api.telegram.org/bot%s", BOT_TOKEN);
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    String updates = execute(getUrlOfSlashCommand("/getUpdates"));
+    String updates = execute("/getUpdates");
 
-    execute(
-        getUrlOfSlashCommand("/sendMessage")
-            + String.format("?chat_id=%s&text=%s", CHAT_ID, encodeValue(updates)));
+    execute("/sendMessage", Map.of("chat_id", CHAT_ID, "text", updates));
   }
 
   private static String encodeValue(String value) {
@@ -40,9 +40,9 @@ public class Main {
 
   private static String getUrlOfSlashCommand(String slashCommand) {
     String slash = "/";
-    Preconditions.checkArgument(!URL_PREFIX.endsWith(slash));
+    Preconditions.checkArgument(!BOT_COMMAND_URL_PREFIX.endsWith(slash));
     Preconditions.checkArgument(slashCommand.startsWith(slash));
-    return URL_PREFIX + slashCommand;
+    return BOT_COMMAND_URL_PREFIX + slashCommand;
   }
 
   private static String loadStringFromFile(String file) {
@@ -53,6 +53,19 @@ public class Main {
     } catch (IOException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  private static String execute(String command, Map<String, String> parameters)
+      throws IOException, InterruptedException {
+    String keyValuePairsDelimiter = "&";
+    String keyValueDelimiter = "=";
+    final String urlPrefix = getUrlOfSlashCommand(command) + "?";
+    String encodedURL =
+        parameters.keySet().stream()
+            .map(key -> key + keyValueDelimiter + encodeValue(parameters.get(key)))
+            .collect(Collectors.joining(keyValuePairsDelimiter, urlPrefix, ""));
+
+    return execute(encodedURL);
   }
 
   private static String execute(String url) throws IOException, InterruptedException {
