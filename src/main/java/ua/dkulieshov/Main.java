@@ -3,6 +3,7 @@ package ua.dkulieshov;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Resources;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -24,12 +25,17 @@ public class Main {
   public static void main(String[] args) throws IOException, InterruptedException {
     String updates = execute(getUrlOfSlashCommand("/getUpdates"));
 
-    String sent =
-        execute(
-            getUrlOfSlashCommand("/sendMessage")
-                + String.format(
-                    "?chat_id=%s&text=%s",
-                    CHAT_ID, URLEncoder.encode(updates, StandardCharsets.UTF_8)));
+    execute(
+        getUrlOfSlashCommand("/sendMessage")
+            + String.format("?chat_id=%s&text=%s", CHAT_ID, encodeValue(updates)));
+  }
+
+  private static String encodeValue(String value) {
+    try {
+      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
+    } catch (UnsupportedEncodingException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private static String getUrlOfSlashCommand(String slashCommand) {
