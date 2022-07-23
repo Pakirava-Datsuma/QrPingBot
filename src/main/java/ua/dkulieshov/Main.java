@@ -38,7 +38,7 @@ public class Main {
     }
   }
 
-  private static String getUrlOfSlashCommand(String slashCommand) {
+  private static String getBotUrlOfSlashCommand(String slashCommand) {
     String slash = "/";
     Preconditions.checkArgument(!BOT_COMMAND_URL_PREFIX.endsWith(slash));
     Preconditions.checkArgument(slashCommand.startsWith(slash));
@@ -55,20 +55,29 @@ public class Main {
     }
   }
 
-  private static String execute(String command, Map<String, String> parameters)
+  private static String executeBotUrl(String command, Map<String, String> parameters)
       throws IOException, InterruptedException {
-    String keyValuePairsDelimiter = "&";
-    String keyValueDelimiter = "=";
-    final String urlPrefix = getUrlOfSlashCommand(command) + "?";
-    String encodedURL =
-        parameters.keySet().stream()
-            .map(key -> key + keyValueDelimiter + encodeValue(parameters.get(key)))
-            .collect(Collectors.joining(keyValuePairsDelimiter, urlPrefix, ""));
-
-    return execute(encodedURL);
+    String encodedParameters = encodeParametersSuffix(parameters);
+    return executeBotUrl(command + encodedParameters);
   }
 
-  private static String execute(String url) throws IOException, InterruptedException {
+  private static String executeBotUrl(String command) throws IOException, InterruptedException {
+    String url = getBotUrlOfSlashCommand(command);
+    return executeUrl(url);
+  }
+
+  private static String encodeParametersSuffix(Map<String, String> parameters) {
+    String parametersPrefix = "?";
+    String keyValueDelimiter = "=";
+    String keyValuePairsDelimiter = "&";
+    String parametersSuffix = "";
+
+    return parameters.keySet().stream()
+        .map(key -> key + keyValueDelimiter + encodeValue(parameters.get(key)))
+        .collect(Collectors.joining(keyValuePairsDelimiter, parametersPrefix, parametersSuffix));
+  }
+
+  private static String executeUrl(String url) throws IOException, InterruptedException {
     System.out.println();
     System.out.println(" < < < : " + url);
     HttpResponse<String> response =
