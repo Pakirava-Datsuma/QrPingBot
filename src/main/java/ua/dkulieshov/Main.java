@@ -17,17 +17,76 @@ import java.util.stream.Collectors;
 public class Main {
 
   public static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
+
   public static final String CHAT_ID_FILE = "chat.id";
   public static final String CHAT_ID = loadStringFromFile(CHAT_ID_FILE);
+
+  public static final String BOT_NAME_FILE = "bot.name";
+  public static final String BOT_NAME = loadStringFromFile(BOT_NAME_FILE);
+  public static final String USER_LINK_PREFIX = "https://t.me/" + BOT_NAME;
+
   public static final String BOT_TOKEN_FILE = "bot.token";
   public static final String BOT_TOKEN = loadStringFromFile(BOT_TOKEN_FILE);
-  public static final String BOT_COMMAND_URL_PREFIX =
-      String.format("https://api.telegram.org/bot%s", BOT_TOKEN);
+
+  public static final String BOT_COMMAND_URL_PREFIX = "https://api.telegram.org/bot" + BOT_TOKEN;
 
   public static void main(String[] args) throws IOException, InterruptedException {
-    String updates = execute("/getUpdates");
+    String updates = getUpdates();
 
-    execute("/sendMessage", Map.of("chat_id", CHAT_ID, "text", updates));
+    sendLinkToInviteBotIntoGroup();
+
+    sendLinkToStartBot();
+  }
+
+  private static String getUpdates() throws IOException, InterruptedException {
+    return executeBotUrl("/getUpdates");
+  }
+
+  /*{
+    "ok": true,
+    "result": [
+      {
+        "update_id": 713697435,
+        "message": {
+          "message_id": 576,
+          "from": {"id": 221287654, "is_bot": false, "first_name": "Dm\u0443troK", "last_name": "\ud83c\uddfa\ud83c\udde6", "username": "Pakirava_Datsuma", "language_code": "uk"},
+          "chat": {"id": 221287654, "first_name": "Dm\u0443troK", "last_name": "\ud83c\uddfa\ud83c\udde6", "username": "Pakirava_Datsuma", "type": "private"},
+          "date": 1658613784,
+          "text": "/start PingPrivate",
+          "entities": [{"offset": 0, "length": 6, "type": "bot_command"}]
+        }
+      }
+    ]
+  }*/
+  private static void sendLinkToStartBot() throws IOException, InterruptedException {
+    String startBotPrivateWithParameter =
+        USER_LINK_PREFIX + encodeParametersSuffix(Map.of("start", "PingPrivate"));
+
+    executeBotUrl("/sendMessage", Map.of("chat_id", CHAT_ID, "text", startBotPrivateWithParameter));
+  }
+
+  /*{
+    "ok": true,
+    "result": [
+      {
+        "update_id": 713697435,
+        "message": {
+          "message_id": 3,
+          "from": {"id": 221287654, "is_bot": false, "first_name": "Dm\u0443troK", "last_name": "\ud83c\uddfa\ud83c\udde6", "username": "Pakirava_Datsuma", "language_code": "uk"},
+          "chat": {"id": -1001650852901, "title": "dv-ftp", "type": "supergroup"},
+          "date": 1658613231,
+          "text": "/start@swantabot PingGroup",
+          "entities": [{"offset": 0, "length": 16, "type": "bot_command"}]
+        }
+      }
+    ]
+  }
+  */
+  private static void sendLinkToInviteBotIntoGroup() throws IOException, InterruptedException {
+    String startBotInGroupWithParameter =
+        USER_LINK_PREFIX + encodeParametersSuffix(Map.of("startgroup", "PingGroup"));
+
+    executeBotUrl("/sendMessage", Map.of("chat_id", CHAT_ID, "text", startBotInGroupWithParameter));
   }
 
   private static String encodeValue(String value) {

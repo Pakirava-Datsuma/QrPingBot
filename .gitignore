@@ -2,3 +2,4 @@
 target/
 /src/main/resources/bot.token
 /src/main/resources/chat.id
+/src/main/resources/bot.name
