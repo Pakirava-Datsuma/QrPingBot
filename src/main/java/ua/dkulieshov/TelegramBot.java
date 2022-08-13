@@ -3,6 +3,9 @@ package ua.dkulieshov;
 import com.google.common.base.Preconditions;
 import java.util.Map;
 
+/**
+ * Bot parameters. No actual logic.
+ */
 public class TelegramBot {
 
   public final String selfLinkPrefix;
