@@ -15,7 +15,7 @@ import ua.dkulieshov.TelegramBot.Param;
 public class TelegramClient {
 
   public static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
-  private final TelegramBot bot;
+  final TelegramBot bot;
 
   public TelegramClient(TelegramBot bot) {
     this.bot = bot;
@@ -60,7 +60,7 @@ public class TelegramClient {
   }
   */
 
-  public Optional<String> getUpdates(String offset) {
+  public Optional<String> getMessageUpdates(String offset) {
     String url = bot.buildCmdUrl(Cmd.GET_UPDATES, Map.of(Param.OFFSET, offset));
     return executeUrl(url);
   }
