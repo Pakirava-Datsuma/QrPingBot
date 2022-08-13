@@ -1,6 +1,7 @@
 package ua.dkulieshov;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -11,12 +12,19 @@ public class TelegramParser {
   public static final String WRAP_1_WITH_DELIMITERS = DELIMITER + "$1" + DELIMITER;
 
   public static Optional<String> parseUpdateOffset(String response) {
-    return extractOne(response, RegexPattern.UPDATE_RESPONSE_WITH_1_OFFSET_GROUP_REGEX);
+    return extractFirstRegexGroup(response, RegexPattern.UPDATE_RESPONSE_WITH_1_OFFSET_GROUP_REGEX);
   }
 
-  private static Optional<String> extractOne(String response, RegexPattern regex) {
+  private static Optional<String> extractFirstRegexGroup(String response, RegexPattern regex) {
     String[] parts = response.replaceAll(regex.regex, WRAP_1_WITH_DELIMITERS).split(DELIMITER);
-    return Optional.of(parts).filter(array -> array.length > 1).map(array -> array[1]);
+    Optional<String> maybeSecondPart = Optional.of(parts).filter(array -> array.length > 1)
+        .map(array -> array[1]);
+
+    if (maybeSecondPart.isEmpty()) {
+      System.out.println("Not found first group. Parts: " + Arrays.toString(parts));
+    }
+
+    return maybeSecondPart;
   }
 
   public static List<String> parseChatIds(String responseWithChatMessages) {
@@ -38,7 +46,7 @@ public class TelegramParser {
   }
 
   public static Optional<String> parseSentMessageId(String responseWithSentMessageId) {
-    return extractOne(responseWithSentMessageId,
+    return extractFirstRegexGroup(responseWithSentMessageId,
         RegexPattern.SENT_MESSAGE_RESPONSE_WITH_1ST_MESSAGE_ID_GROUP_REGEX);
   }
 
@@ -48,11 +56,11 @@ public class TelegramParser {
         "\"chat_id\":\\s+(\\d+),"), SENT_MESSAGE_RESPONSE_WITH_1ST_MESSAGE_ID_GROUP_REGEX(
         "\"message_id\":\\s+(\\d+),"),
     /*  */;
-
     private final String regex;
 
     RegexPattern(String regex) {
       this.regex = regex;
     }
+
   }
 }

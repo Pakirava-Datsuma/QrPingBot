@@ -18,10 +18,11 @@ public class Chat {
   }
 
   public static String waitFirstUpdate(TelegramClient client) {
-    return waitUntil(() -> client.getUpdates().flatMap(TelegramParser::parseUpdateOffset));
+    return waitUntilOptionalIsPresent(
+        () -> client.getUpdates().flatMap(TelegramParser::parseUpdateOffset));
   }
 
-  private static <T> T waitUntil(Supplier<Optional<T>> responder) {
+  private static <T> T waitUntilOptionalIsPresent(Supplier<Optional<T>> responder) {
     Optional<T> maybeValue = Optional.empty();
     while (maybeValue.isEmpty()) {
       maybeValue = responder.get();
@@ -35,7 +36,8 @@ public class Chat {
   }
 
   public static List<String> waitUpdateChatIds(TelegramClient client, String offset) {
-    String responseWithChatMessages = waitUntil(() -> client.getMessageUpdates(offset));
+    String responseWithChatMessages = waitUntilOptionalIsPresent(
+        () -> client.getMessageUpdates(offset));
     List<String> chatIds = TelegramParser.parseChatIds(responseWithChatMessages);
     return chatIds;
   }
