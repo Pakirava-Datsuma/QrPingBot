@@ -42,6 +42,10 @@ public class TelegramClient {
     return executeBotUrl("/getUpdates");
   }
 
+  public String getUpdates(String offset) throws IOException, InterruptedException {
+    return executeBotUrl("/getUpdates", Map.of("offset", String.valueOf(offset)));
+  }
+
   private String executeBotUrl(String command) throws IOException, InterruptedException {
     String url = getBotUrlOfSlashCommand(command);
     return executeUrl(url);

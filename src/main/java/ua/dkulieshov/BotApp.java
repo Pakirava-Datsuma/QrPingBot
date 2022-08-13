@@ -3,6 +3,7 @@ package ua.dkulieshov;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Optional;
 
 public class BotApp {
 
@@ -16,7 +17,8 @@ public class BotApp {
 
   public static void main(String[] args) throws IOException, InterruptedException {
     TelegramClient client = new TelegramClient();
-    String updates = client.getUpdates();
+    String updatesResponse = client.getUpdates();
+    Optional<String> maybeOffset = telegramParser.parseUpdateOffset(updatesResponse);
 
     client.sendLinkToInviteBotIntoGroup();
 
