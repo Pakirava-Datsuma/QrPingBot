@@ -65,9 +65,9 @@ public class TelegramClient {
     return executeUrl(url);
   }
 
-  public void send(String chatId, String message) {
+  public Optional<String> send(String chatId, String message) {
     String url = bot.buildCmdUrl(Cmd.SEND_MESSAGE,
         Map.of(Param.CHAT_ID, chatId, Param.TEXT, message));
-    executeUrl(url);
+    return executeUrl(url);
   }
 }

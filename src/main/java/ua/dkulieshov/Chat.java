@@ -10,6 +10,7 @@ public class Chat {
   private final String chatId;
   private final TelegramClient client;
   private TelegramParser parser;
+  private Optional<String> lastMessageSent = Optional.empty();
 
   public Chat(String chatId, TelegramClient client) {
     this.chatId = chatId;
@@ -60,7 +61,8 @@ public class Chat {
   public void sendLinkToStartBot() {
     String link = client.bot.buildStartLinkWithKeyNGroup(chatId, chatId);
     String message = String.format("Hey! This chat id = %s\n%s", chatId, link);
-    client.send(chatId, message);
+    Optional<String> maybeResponseWithMessageId = client.send(chatId, message);
+    this.lastMessageSent = maybeResponseWithMessageId.map(TelegramParser::parseSentMessageId);
   }
 
   /*{

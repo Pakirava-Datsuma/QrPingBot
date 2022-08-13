@@ -16,7 +16,7 @@ public class BotRunner {
   public static final String BOT_TOKEN = loadStringFromFile(BOT_TOKEN_FILE);
 
 
-  public static void main(String[] args) throws InterruptedException {
+  public static void main(String[] args) {
     TelegramClient client = new TelegramClient(new TelegramBot(BOT_NAME, BOT_TOKEN));
 
     String offset = Chat.waitFirstUpdate(client);
