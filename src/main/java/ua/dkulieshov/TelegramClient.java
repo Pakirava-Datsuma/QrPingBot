@@ -26,15 +26,15 @@ public class TelegramClient {
     return executeUrl(url);
   }
 
-  private static Optional<String> executeUrl(String url) {
-    System.out.println();
-    System.out.println(" < < < : " + url);
+  private Optional<String> executeUrl(String url) {
+    bot.log();
+    bot.log(" < < < : " + url);
     HttpResponse<String> response = null;
     try {
       response = HTTP_CLIENT.send(HttpRequest.newBuilder().GET().uri(URI.create(url)).build(),
           responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8));
-      System.out.println(" > > > : " + response.toString());
-      System.out.println(" > > > : " + response.body());
+      bot.log(" > > > : " + response.toString());
+      bot.log(" > > > : " + response.body());
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }

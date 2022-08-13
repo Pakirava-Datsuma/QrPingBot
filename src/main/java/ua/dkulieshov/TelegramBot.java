@@ -36,6 +36,15 @@ public class TelegramBot {
     return selfLinkPrefix + Param.UTILS.buildTParametersSuffix(paramMap);
   }
 
+  public void log() {
+    System.out.println();
+  }
+
+  public void log(String s) {
+    String maskedS = s.replaceAll(botToken, "***");
+    System.out.println(maskedS);
+  }
+
   enum Param {
     START("start"), STARTGROUP("startgroup"), TEXT("text"), CHAT_ID("chat_id"), OFFSET("offset"),
     ;
