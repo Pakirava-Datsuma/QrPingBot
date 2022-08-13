@@ -1,8 +1,8 @@
 package ua.dkulieshov;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
-import java.util.stream.Stream;
-import java.util.stream.Stream.Builder;
 
 public class TelegramParser {
 
@@ -19,21 +19,22 @@ public class TelegramParser {
     return Optional.of(parts).filter(array -> array.length > 1).map(array -> array[1]);
   }
 
-  public static Stream<String> parseChatIds(String responseWithChatMessages) {
-    if (responseWithChatMessages.isBlank()) {
-      return Stream.empty();
-    }
-
+  public static List<String> parseChatIds(String responseWithChatMessages) {
     String[] parts = responseWithChatMessages.replaceAll(
             RegexPattern.MESSAGES_RESPONSE_WITH_1_CHAT_ID_GROUP_REGEX.regex, WRAP_1_WITH_DELIMITERS)
         .split(DELIMITER);
 
-    Builder<String> builder = Stream.<String>builder();
+    List<String> list = new ArrayList<>();
     for (int i = 1; i < parts.length; i = i + 2) {
-      builder.accept(parts[i]);
+      list.add(parts[i]);
     }
+    //0 {messages: [ {chat_id:
+    //1 %1111111
+    //2 %, message:blablalba}, {chat_id:
+    //3 %2222222
+    //4 %, message:bl2bla2b2}, ]
 
-    return builder.build();
+    return list;
   }
 
   public static Optional<String> parseSentMessageId(String responseWithSentMessageId) {

@@ -1,9 +1,9 @@
 package ua.dkulieshov;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
-import java.util.stream.Stream;
 
 public class Chat {
 
@@ -34,11 +34,11 @@ public class Chat {
     return maybeValue.get();
   }
 
-  public static Stream<Chat> waitNextUpdates(TelegramClient client, String offset) {
+  public static List<String> waitUpdateChatIds(TelegramClient client, String offset) {
     String nextOffset = String.valueOf(Long.parseLong(offset) + 1);
     String responseWithChatMessages = waitUntil(() -> client.getMessageUpdates(nextOffset));
-    Stream<String> chatIds = TelegramParser.parseChatIds(responseWithChatMessages);
-    return chatIds.map(id -> new Chat(id, client));
+    List<String> chatIds = TelegramParser.parseChatIds(responseWithChatMessages);
+    return chatIds;
   }
 
   /*{

@@ -70,4 +70,8 @@ public class TelegramClient {
         Map.of(Param.CHAT_ID, chatId, Param.TEXT, message));
     return executeUrl(url);
   }
+
+  public void updateMessage(String id, String repeatedMessage) {
+    throw new RuntimeException("NotImplementedException");
+  }
 }

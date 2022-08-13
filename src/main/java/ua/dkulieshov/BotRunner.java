@@ -21,8 +21,9 @@ public class BotRunner {
     Chat adminChat = new Chat(ADMIN_CHAT_ID, client);
 
     String offset = Chat.waitFirstUpdate(client);
-    adminChat.sendRepeatableMessage(offset);
-    Chat.waitNextUpdates(client, offset).forEach(chat -> chat.sendLinkToStartBot());
+    adminChat.sendRepeatableMessage("Last offset found: " + offset);
+
+    Chat.waitUpdateChatIds(client, offset).forEach(chat -> chat.sendLinkToStartBot());
 
   }
 
