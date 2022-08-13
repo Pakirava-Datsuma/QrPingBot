@@ -3,7 +3,6 @@ package ua.dkulieshov;
 import com.google.common.base.Preconditions;
 import com.google.common.io.Resources;
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.net.URLEncoder;
 import java.net.http.HttpClient;
@@ -14,7 +13,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Main {
+public class TelegramClient {
 
   public static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
 
@@ -30,16 +29,42 @@ public class Main {
 
   public static final String BOT_COMMAND_URL_PREFIX = "https://api.telegram.org/bot" + BOT_TOKEN;
 
-  public static void main(String[] args) throws IOException, InterruptedException {
-    String updates = getUpdates();
-
-    sendLinkToInviteBotIntoGroup();
-
-    sendLinkToStartBot();
+  private static String loadStringFromFile(String file) {
+    try {
+      return Resources.readLines(Resources.getResource(file), StandardCharsets.UTF_8).stream()
+          .findFirst().get();
+    } catch (IOException e) {
+      throw new RuntimeException(e);
+    }
   }
 
-  private static String getUpdates() throws IOException, InterruptedException {
+  public String getUpdates() throws IOException, InterruptedException {
     return executeBotUrl("/getUpdates");
+  }
+
+  private String executeBotUrl(String command) throws IOException, InterruptedException {
+    String url = getBotUrlOfSlashCommand(command);
+    return executeUrl(url);
+  }
+
+  private static String getBotUrlOfSlashCommand(String slashCommand) {
+    String slash = "/";
+    Preconditions.checkArgument(!BOT_COMMAND_URL_PREFIX.endsWith(slash));
+    Preconditions.checkArgument(slashCommand.startsWith(slash));
+    return BOT_COMMAND_URL_PREFIX + slashCommand;
+  }
+
+  private static String executeUrl(String url) throws IOException, InterruptedException {
+    System.out.println();
+    System.out.println(" < < < : " + url);
+    HttpResponse<String> response = HTTP_CLIENT.send(
+        HttpRequest.newBuilder().GET().uri(URI.create(url)).build(),
+        responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8));
+
+    System.out.println(" > > > : " + response.toString());
+    System.out.println(" > > > : " + response.body());
+
+    return response.body();
   }
 
   /*{
@@ -58,11 +83,32 @@ public class Main {
       }
     ]
   }*/
-  private static void sendLinkToStartBot() throws IOException, InterruptedException {
+  public void sendLinkToStartBot() throws IOException, InterruptedException {
     String startBotPrivateWithParameter =
         USER_LINK_PREFIX + encodeParametersSuffix(Map.of("start", "PingPrivate"));
 
     executeBotUrl("/sendMessage", Map.of("chat_id", CHAT_ID, "text", startBotPrivateWithParameter));
+  }
+
+  private static String encodeParametersSuffix(Map<String, String> parameters) {
+    String parametersPrefix = "?";
+    String keyValueDelimiter = "=";
+    String keyValuePairsDelimiter = "&";
+    String parametersSuffix = "";
+
+    return parameters.keySet().stream()
+        .map(key -> key + keyValueDelimiter + encodeValue(parameters.get(key)))
+        .collect(Collectors.joining(keyValuePairsDelimiter, parametersPrefix, parametersSuffix));
+  }
+
+  private String executeBotUrl(String command, Map<String, String> parameters)
+      throws IOException, InterruptedException {
+    String encodedParameters = encodeParametersSuffix(parameters);
+    return executeBotUrl(command + encodedParameters);
+  }
+
+  private static String encodeValue(String value) {
+    return URLEncoder.encode(value, StandardCharsets.UTF_8);
   }
 
   /*{
@@ -82,71 +128,10 @@ public class Main {
     ]
   }
   */
-  private static void sendLinkToInviteBotIntoGroup() throws IOException, InterruptedException {
+  public void sendLinkToInviteBotIntoGroup() throws IOException, InterruptedException {
     String startBotInGroupWithParameter =
         USER_LINK_PREFIX + encodeParametersSuffix(Map.of("startgroup", "PingGroup"));
 
     executeBotUrl("/sendMessage", Map.of("chat_id", CHAT_ID, "text", startBotInGroupWithParameter));
-  }
-
-  private static String encodeValue(String value) {
-    try {
-      return URLEncoder.encode(value, StandardCharsets.UTF_8.toString());
-    } catch (UnsupportedEncodingException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static String getBotUrlOfSlashCommand(String slashCommand) {
-    String slash = "/";
-    Preconditions.checkArgument(!BOT_COMMAND_URL_PREFIX.endsWith(slash));
-    Preconditions.checkArgument(slashCommand.startsWith(slash));
-    return BOT_COMMAND_URL_PREFIX + slashCommand;
-  }
-
-  private static String loadStringFromFile(String file) {
-    try {
-      return Resources.readLines(Resources.getResource(file), StandardCharsets.UTF_8).stream()
-          .findFirst()
-          .get();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static String executeBotUrl(String command, Map<String, String> parameters)
-      throws IOException, InterruptedException {
-    String encodedParameters = encodeParametersSuffix(parameters);
-    return executeBotUrl(command + encodedParameters);
-  }
-
-  private static String executeBotUrl(String command) throws IOException, InterruptedException {
-    String url = getBotUrlOfSlashCommand(command);
-    return executeUrl(url);
-  }
-
-  private static String encodeParametersSuffix(Map<String, String> parameters) {
-    String parametersPrefix = "?";
-    String keyValueDelimiter = "=";
-    String keyValuePairsDelimiter = "&";
-    String parametersSuffix = "";
-
-    return parameters.keySet().stream()
-        .map(key -> key + keyValueDelimiter + encodeValue(parameters.get(key)))
-        .collect(Collectors.joining(keyValuePairsDelimiter, parametersPrefix, parametersSuffix));
-  }
-
-  private static String executeUrl(String url) throws IOException, InterruptedException {
-    System.out.println();
-    System.out.println(" < < < : " + url);
-    HttpResponse<String> response =
-        HTTP_CLIENT.send(
-            HttpRequest.newBuilder().GET().uri(URI.create(url)).build(),
-            responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8));
-
-    System.out.println(" > > > : " + response.toString());
-    System.out.println(" > > > : " + response.body());
-
-    return response.body();
   }
 }
