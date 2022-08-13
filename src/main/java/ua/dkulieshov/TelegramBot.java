@@ -2,6 +2,7 @@ package ua.dkulieshov;
 
 import com.google.common.base.Preconditions;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Bot parameters. No actual logic.
@@ -25,7 +26,7 @@ public class TelegramBot {
   }
 
   String buildCmdUrl(Cmd cmd, Map<Param, String> parameters) {
-    return UrlUtils.buildUrl(botCommandUrlPrefix + cmd.path, Map.of());
+    return UrlUtils.buildUrl(botCommandUrlPrefix + cmd.path, Param.transformKeys(parameters));
   }
 
   String buildStartLinkWithKeyNGroup(String chatIdOrName, String key) {
@@ -33,7 +34,8 @@ public class TelegramBot {
   }
 
   private String buildBotStartLink(Map<Param, String> paramMap) {
-    return selfLinkPrefix + Param.UTILS.buildTParametersSuffix(paramMap);
+    String parametersSuffix = UrlUtils.buildParametersSuffix(Param.transformKeys(paramMap));
+    return selfLinkPrefix + parametersSuffix;
   }
 
   public void log() {
@@ -46,14 +48,25 @@ public class TelegramBot {
   }
 
   enum Param {
-    START("start"), STARTGROUP("startgroup"), TEXT("text"), CHAT_ID("chat_id"), OFFSET("offset"),
-    ;
+    //@formatter:off
+    START("start"),
+    STARTGROUP("startgroup"),
+    TEXT("text"),
+    CHAT_ID("chat_id"),
+    OFFSET("offset"),
+    ;//@formatter:on
 
-    public static final UrlUtils<Param> UTILS = new UrlUtils<>(p -> p.key);
+
     private final String key;
 
     Param(String key) {
       this.key = key;
+    }
+
+    public static Map<String, String> transformKeys(Map<Param, String> paramMap) {
+      Map<String, String> map = paramMap.entrySet().stream()
+          .collect(Collectors.toMap(e -> e.getKey().key, e -> e.getValue()));
+      return map;
     }
   }
 
