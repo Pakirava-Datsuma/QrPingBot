@@ -35,8 +35,7 @@ public class Chat {
   }
 
   public static List<String> waitUpdateChatIds(TelegramClient client, String offset) {
-    String nextOffset = String.valueOf(Long.parseLong(offset) + 1);
-    String responseWithChatMessages = waitUntil(() -> client.getMessageUpdates(nextOffset));
+    String responseWithChatMessages = waitUntil(() -> client.getMessageUpdates(offset));
     List<String> chatIds = TelegramParser.parseChatIds(responseWithChatMessages);
     return chatIds;
   }

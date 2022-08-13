@@ -3,6 +3,7 @@ package ua.dkulieshov;
 import com.google.common.io.Resources;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
 
 public class BotRunner {
 
@@ -23,7 +24,18 @@ public class BotRunner {
     String offset = Chat.waitFirstUpdate(client);
     adminChat.sendRepeatableMessage("Last offset found: " + offset);
 
-    Chat.waitUpdateChatIds(client, offset).forEach(chat -> chat.sendLinkToStartBot());
+    while (true) {
+      offset = String.valueOf(Long.parseLong(offset) + 1);
+
+      List<String> chatIds = Chat.waitUpdateChatIds(client, offset);
+
+      chatIds.forEach(id -> answerToChat(id));
+
+      adminChat.sendRepeatableMessage("Answered offset: " + offset);
+    }
+  }
+
+  private static void answerToChat(String id) {
 
   }
 
