@@ -10,7 +10,7 @@ public class Chat {
   private final String chatId;
   private final TelegramClient client;
   private TelegramParser parser;
-  private Optional<String> lastMessageSent = Optional.empty();
+  private ChatMessageReference lastMessageSent = ChatMessageReference.EMPTY;
 
   public Chat(String chatId, TelegramClient client) {
     this.chatId = chatId;
@@ -59,9 +59,14 @@ public class Chat {
   }*/
   public void sendLinkToStartBot() {
     String link = client.bot.buildStartLinkWithKeyNGroup(chatId, chatId);
-    String message = String.format("Hey! This chat id = %s\n%s", chatId, link);
-    Optional<String> maybeResponseWithMessageId = client.send(chatId, message);
-    this.lastMessageSent = maybeResponseWithMessageId.flatMap(TelegramParser::parseSentMessageId);
+    String text = String.format("Hey! This chat id = %s\n%s", chatId, link);
+    Optional<String> maybeResponseWithMessageId = client.send(chatId, text);
+    maybeResponseWithMessageId.flatMap(TelegramParser::parseSentMessageId)
+        .ifPresent(id -> updateLastSentMessage(id, text));
+  }
+
+  private void updateLastSentMessage(String id, String text) {
+    lastMessageSent = new ChatMessageReference(id, text);
   }
 
   /*{
@@ -115,4 +120,21 @@ public class Chat {
 */
   }
 
+  public void sendRepeatableMessage(String offset) {
+    if (lastMessageSent.textEquals(offset)) {
+      String repeatedMessage = buildLastSentMessageWithRepeatition(offset);
+      client.updateMessage(lastMessageSent.getId(), repeatedMessage);
+      return;
+    }
+    Optional<String> maybeMessageId = client.send(chatId, offset);
+    if (maybeMessageId.isPresent()) {
+      String id = maybeMessageId.get();
+      updateLastSentMessage(id, offset);
+    }
+  }
+
+  private String buildLastSentMessageWithRepeatition(String text) {
+    int i = lastMessageSent.incrementAndGetRepetition();
+    return "(" + i + ") " + text;
+  }
 }
