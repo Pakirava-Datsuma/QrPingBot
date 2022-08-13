@@ -36,9 +36,13 @@ public class Chat {
   }
 
   public static List<String> waitUpdateChatIds(TelegramClient client, String offset) {
-    String responseWithChatMessages = waitUntilOptionalIsPresent(
-        () -> client.getMessageUpdates(offset));
-    List<String> chatIds = TelegramParser.parseChatIds(responseWithChatMessages);
+    //@formatter:off
+    List<String> chatIds = waitUntilOptionalIsPresent(() ->
+        client.getMessageUpdates(offset)
+            .map(TelegramParser::parseChatIds)
+            .filter(list -> !list.isEmpty())
+    );
+    //@formatter:on
     return chatIds;
   }
 
