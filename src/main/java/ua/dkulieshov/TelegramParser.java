@@ -51,7 +51,7 @@ public class TelegramParser {
   enum RegexPattern {
     //@formatter:off
     UPDATE_ID("\"update_id\":\\s*(\\d+),"),
-    CHAT_ID("\"chat_id\":\\s*(\\d+),"),
+    CHAT_ID("\"chat\":\\{\\s*\"id\":\\s*(\\d+),"),
     MESSAGE_ID("\"message_id\":\\s*(\\d+),"),
     ;
     //@formatter:on

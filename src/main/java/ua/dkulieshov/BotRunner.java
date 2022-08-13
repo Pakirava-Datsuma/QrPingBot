@@ -31,7 +31,14 @@ public class BotRunner {
 
       chatIds.forEach(id -> answerToChat(id));
 
-      adminChat.sendRepeatableMessage("Answered offset: " + offset);
+      /*
+
+Exception in thread "main" java.lang.RuntimeException: NotImplementedException
+	at ua.dkulieshov.TelegramClient.updateMessage(TelegramClient.java:75)
+	at ua.dkulieshov.Chat.sendRepeatableMessage(Chat.java:131)
+	at ua.dkulieshov.BotRunner.main(BotRunner.java:34)
+       */
+      adminChat.sendRepeatableMessage("No!");
     }
   }
 
