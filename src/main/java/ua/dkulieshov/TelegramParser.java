@@ -1,5 +1,6 @@
 package ua.dkulieshov;
 
+import java.util.Optional;
 import java.util.stream.Stream;
 import java.util.stream.Stream.Builder;
 
@@ -9,14 +10,13 @@ public class TelegramParser {
   public static final String DELIMITER = "%";
   public static final String WRAP_1_WITH_DELIMITERS = DELIMITER + "$1" + DELIMITER;
 
-  public static String parseUpdateOffset(String response) {
+  public static Optional<String> parseUpdateOffset(String response) {
     return extractOne(response, RegexPattern.UPDATE_RESPONSE_WITH_1_OFFSET_GROUP_REGEX);
   }
 
-  private static String extractOne(String response, RegexPattern regex) {
+  private static Optional<String> extractOne(String response, RegexPattern regex) {
     String[] parts = response.replaceAll(regex.regex, WRAP_1_WITH_DELIMITERS).split(DELIMITER);
-
-    return parts[1];
+    return Optional.of(parts).filter(array -> array.length > 1).map(array -> array[1]);
   }
 
   public static Stream<String> parseChatIds(String responseWithChatMessages) {
@@ -36,7 +36,7 @@ public class TelegramParser {
     return builder.build();
   }
 
-  public static String parseSentMessageId(String responseWithSentMessageId) {
+  public static Optional<String> parseSentMessageId(String responseWithSentMessageId) {
     return extractOne(responseWithSentMessageId,
         RegexPattern.SENT_MESSAGE_RESPONSE_WITH_1ST_MESSAGE_ID_GROUP_REGEX);
   }

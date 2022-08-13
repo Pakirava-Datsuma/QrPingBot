@@ -18,8 +18,7 @@ public class Chat {
   }
 
   public static String waitFirstUpdate(TelegramClient client) {
-    String responseWithUpdateOffset = waitUntil(client::getUpdates);
-    return TelegramParser.parseUpdateOffset(responseWithUpdateOffset);
+    return waitUntil(() -> client.getUpdates().flatMap(TelegramParser::parseUpdateOffset));
   }
 
   private static <T> T waitUntil(Supplier<Optional<T>> responder) {
@@ -62,7 +61,7 @@ public class Chat {
     String link = client.bot.buildStartLinkWithKeyNGroup(chatId, chatId);
     String message = String.format("Hey! This chat id = %s\n%s", chatId, link);
     Optional<String> maybeResponseWithMessageId = client.send(chatId, message);
-    this.lastMessageSent = maybeResponseWithMessageId.map(TelegramParser::parseSentMessageId);
+    this.lastMessageSent = maybeResponseWithMessageId.flatMap(TelegramParser::parseSentMessageId);
   }
 
   /*{
