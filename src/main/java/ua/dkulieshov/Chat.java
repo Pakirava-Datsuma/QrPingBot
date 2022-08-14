@@ -64,7 +64,7 @@ public class Chat {
     ]
   }*/
   public void sendLinkToStartBot() {
-    String link = client.bot.buildStartLinkWithKeyNGroup(chatId, chatId);
+    String link = client.botId.buildStartLinkWithKeyNGroup(chatId, chatId);
     String text = String.format("Hey! This chat id = %s\n%s", chatId, link);
     Optional<String> maybeResponseWithMessageId = client.send(chatId, text);
     maybeResponseWithMessageId.flatMap(TelegramParser::parseSentMessageId).ifPresent(id -> {

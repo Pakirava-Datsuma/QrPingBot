@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 /**
  * Bot parameters. No actual logic.
  */
-public class Bot {
+public class BotId {
 
   public final String selfLinkPrefix;
   public final String botCommandUrlPrefix;
   private final String botName;
   private final String botToken;
 
-  public Bot(String botName, String botToken) {
+  public BotId(String botName, String botToken) {
     this.botName = botName;
     this.botToken = botToken;
     selfLinkPrefix = "https://t.me/" + botName;

@@ -9,32 +9,32 @@ import java.net.http.HttpResponse.BodySubscribers;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
-import ua.dkulieshov.Bot.Cmd;
-import ua.dkulieshov.Bot.Param;
+import ua.dkulieshov.BotId.Cmd;
+import ua.dkulieshov.BotId.Param;
 
 public class TelegramClient {
 
   public static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
-  final Bot bot;
+  final BotId botId;
 
-  public TelegramClient(Bot bot) {
-    this.bot = bot;
+  public TelegramClient(BotId botId) {
+    this.botId = botId;
   }
 
   public Optional<String> getUpdates() {
-    String url = bot.buildCmdUrl(Cmd.GET_UPDATES);
+    String url = botId.buildCmdUrl(Cmd.GET_UPDATES);
     return executeUrl(url);
   }
 
   private Optional<String> executeUrl(String url) {
-    bot.log();
-    bot.log(" < < < : " + url);
+    botId.log();
+    botId.log(" < < < : " + url);
     HttpResponse<String> response = null;
     try {
       response = HTTP_CLIENT.send(HttpRequest.newBuilder().GET().uri(URI.create(url)).build(),
           responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8));
-      bot.log(" > > > : " + response.toString());
-      bot.log(" > > > : " + response.body());
+      botId.log(" > > > : " + response.toString());
+      botId.log(" > > > : " + response.body());
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
@@ -61,12 +61,12 @@ public class TelegramClient {
   */
 
   public Optional<String> getMessageUpdates(String offset) {
-    String url = bot.buildCmdUrl(Cmd.GET_UPDATES, Map.of(Param.OFFSET, offset));
+    String url = botId.buildCmdUrl(Cmd.GET_UPDATES, Map.of(Param.OFFSET, offset));
     return executeUrl(url);
   }
 
   public Optional<String> send(String chatId, String message) {
-    String url = bot.buildCmdUrl(Cmd.SEND_MESSAGE,
+    String url = botId.buildCmdUrl(Cmd.SEND_MESSAGE,
         Map.of(Param.CHAT_ID, chatId, Param.TEXT, message));
     return executeUrl(url);
   }
@@ -76,12 +76,12 @@ public class TelegramClient {
   }
 
   public void deleteMessage(String chatId, String messageId) {
-    String url = bot.buildCmdUrl(Cmd.DELETE_MESSAGE,
+    String url = botId.buildCmdUrl(Cmd.DELETE_MESSAGE,
         Map.of(Param.CHAT_ID, chatId, Param.MESSAGE_ID, messageId));
     Optional<String> maybeResponse = executeUrl(url);
     boolean notDeleted = maybeResponse.filter(response -> response.contains("true")).isEmpty();
     if (notDeleted) {
-      bot.log("\n! ! ! ! Not deleted ! ! !\n");
+      botId.log("\n! ! ! ! Not deleted ! ! !\n");
     }
   }
 }
