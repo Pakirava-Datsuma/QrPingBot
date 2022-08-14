@@ -27,14 +27,14 @@ public class TelegramClient {
   }
 
   private Optional<String> executeUrl(String url) {
-    botId.log();
-    botId.log(" < < < : " + url);
+    System.out.println();
+    System.out.println(" < < < : " + botId.mask(url));
     HttpResponse<String> response = null;
     try {
       response = HTTP_CLIENT.send(HttpRequest.newBuilder().GET().uri(URI.create(url)).build(),
           responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8));
-      botId.log(" > > > : " + response.toString());
-      botId.log(" > > > : " + response.body());
+      //      System.out.println(" > > > : " + botId.mask(response.toString()));
+      System.out.println(" > > > : " + botId.mask(response.body()));
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
     }
@@ -60,6 +60,16 @@ public class TelegramClient {
   }
   */
 
+  public void deleteMessage(String chatId, String messageId) {
+    String url = botId.buildCmdUrl(Cmd.DELETE_MESSAGE,
+        Map.of(Param.CHAT_ID, chatId, Param.MESSAGE_ID, messageId));
+    Optional<String> maybeResponse = executeUrl(url);
+    boolean notDeleted = maybeResponse.filter(response -> response.contains("true")).isEmpty();
+    if (notDeleted) {
+      System.out.println("\n! ! ! ! Not deleted ! ! !\n");
+    }
+  }
+
   public Optional<String> getMessageUpdates(String offset) {
     String url = botId.buildCmdUrl(Cmd.GET_UPDATES, Map.of(Param.OFFSET, offset));
     return executeUrl(url);
@@ -73,15 +83,5 @@ public class TelegramClient {
 
   public void updateMessage(String id, String repeatedMessage) {
     throw new RuntimeException("NotImplementedException");
-  }
-
-  public void deleteMessage(String chatId, String messageId) {
-    String url = botId.buildCmdUrl(Cmd.DELETE_MESSAGE,
-        Map.of(Param.CHAT_ID, chatId, Param.MESSAGE_ID, messageId));
-    Optional<String> maybeResponse = executeUrl(url);
-    boolean notDeleted = maybeResponse.filter(response -> response.contains("true")).isEmpty();
-    if (notDeleted) {
-      botId.log("\n! ! ! ! Not deleted ! ! !\n");
-    }
   }
 }

@@ -38,13 +38,8 @@ public class BotId {
     return selfLinkPrefix + parametersSuffix;
   }
 
-  public void log() {
-    System.out.println();
-  }
-
-  public void log(String s) {
-    String maskedS = s.replaceAll(botToken, "***");
-    System.out.println(maskedS);
+  public String mask(String s) {
+    return s.replaceAll(botToken, "***");
   }
 
   enum Param {
