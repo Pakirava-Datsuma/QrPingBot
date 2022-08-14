@@ -1,6 +1,7 @@
 package ua.dkulieshov;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -149,4 +150,8 @@ public class Chat {
     }
   }
 
+  public void sendQrCode(InputStream inputStream) {
+    String filename = String.format("QR ping code for chat %s.png", chatId);
+    client.sendPhoto(chatId, inputStream, filename);
+  }
 }

@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-
-  <groupId>ua.dkulieshov</groupId>
   <artifactId>qr-ping-telegram-bot</artifactId>
-  <name>QR Ping Telegram Bot</name>
-  <version>1.0-SNAPSHOT</version>
+
   <dependencies>
     <dependency>
-      <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
+      <groupId>com.google.guava</groupId>
       <version>30.1.1-jre</version>
+    </dependency>
+    <dependency>
+      <artifactId>httpmime</artifactId>
+      <groupId>org.apache.httpcomponents</groupId>
+      <version>4.5.13</version>
     </dependency>
   </dependencies>
 
+  <groupId>ua.dkulieshov</groupId>
+  <modelVersion>4.0.0</modelVersion>
+  <name>QR Ping Telegram Bot</name>
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
+
+  <version>1.0-SNAPSHOT</version>
 
 </project>

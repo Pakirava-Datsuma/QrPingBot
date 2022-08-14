@@ -2,6 +2,7 @@ package ua.dkulieshov;
 
 import com.google.common.io.Resources;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -20,6 +21,10 @@ public class BotRunner {
   public static void main(String[] args) {
     TelegramClient client = new TelegramClient(new BotId(BOT_NAME, BOT_TOKEN));
     Chat adminChat = new Chat(ADMIN_CHAT_ID, client);
+
+    adminChat.sendQrCode(InputStream.nullInputStream());
+
+    System.exit(0);
 
     String offset = Chat.waitFirstUpdate(client);
     adminChat.sendRepeatableMessage("Last offset found: " + offset);

@@ -50,6 +50,7 @@ public class BotId {
     CHAT_ID("chat_id"),
     OFFSET("offset"),
     MESSAGE_ID("message_id"),
+    PHOTO("photo"),
     ;//@formatter:on
 
 
@@ -64,13 +65,18 @@ public class BotId {
           .collect(Collectors.toMap(e -> e.getKey().key, e -> e.getValue()));
       return map;
     }
+
+    public String getKey() {
+      return key;
+    }
   }
 
   enum Cmd {
     //@formatter:off
     SEND_MESSAGE("/sendMessage"),
     GET_UPDATES("/getUpdates"),
-    DELETE_MESSAGE("/deleteMessage")
+    DELETE_MESSAGE("/deleteMessage"),
+    SEND_PHOTO("/sendPhoto")
     ;//@formatter:on
 
     private static final String SLASH_PREFIX = "/";
