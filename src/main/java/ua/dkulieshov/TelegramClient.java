@@ -74,4 +74,14 @@ public class TelegramClient {
   public void updateMessage(String id, String repeatedMessage) {
     throw new RuntimeException("NotImplementedException");
   }
+
+  public void deleteMessage(String chatId, String messageId) {
+    String url = bot.buildCmdUrl(Cmd.DELETE_MESSAGE,
+        Map.of(Param.CHAT_ID, chatId, Param.MESSAGE_ID, messageId));
+    Optional<String> maybeResponse = executeUrl(url);
+    boolean notDeleted = maybeResponse.filter(response -> response.contains("true")).isEmpty();
+    if (notDeleted) {
+      bot.log("\n! ! ! ! Not deleted ! ! !\n");
+    }
+  }
 }

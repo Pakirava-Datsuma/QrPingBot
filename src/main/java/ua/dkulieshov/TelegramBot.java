@@ -54,6 +54,7 @@ public class TelegramBot {
     TEXT("text"),
     CHAT_ID("chat_id"),
     OFFSET("offset"),
+    MESSAGE_ID("message_id"),
     ;//@formatter:on
 
 
@@ -71,8 +72,11 @@ public class TelegramBot {
   }
 
   enum Cmd {
-    SEND_MESSAGE("/sendMessage"), GET_UPDATES("/getUpdates")
-    /*  */;
+    //@formatter:off
+    SEND_MESSAGE("/sendMessage"),
+    GET_UPDATES("/getUpdates"),
+    DELETE_MESSAGE("/deleteMessage")
+    ;//@formatter:on
 
     private static final String SLASH_PREFIX = "/";
     private final String path;
