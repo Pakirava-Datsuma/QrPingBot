@@ -11,6 +11,7 @@ public class Chat {
   private final TelegramClient client;
   private TelegramParser parser;
   private ChatMessageReference lastMessageSent = ChatMessageReference.EMPTY;
+  private int lastMessageRepetitionNumber = 0;
 
   public Chat(String chatId, TelegramClient client) {
     this.chatId = chatId;
@@ -66,12 +67,10 @@ public class Chat {
     String link = client.bot.buildStartLinkWithKeyNGroup(chatId, chatId);
     String text = String.format("Hey! This chat id = %s\n%s", chatId, link);
     Optional<String> maybeResponseWithMessageId = client.send(chatId, text);
-    maybeResponseWithMessageId.flatMap(TelegramParser::parseSentMessageId)
-        .ifPresent(id -> updateLastSentMessage(id, text));
-  }
-
-  private void updateLastSentMessage(String id, String text) {
-    lastMessageSent = new ChatMessageReference(id, text);
+    maybeResponseWithMessageId.flatMap(TelegramParser::parseSentMessageId).ifPresent(id -> {
+      lastMessageSent = new ChatMessageReference(id, text);
+      lastMessageRepetitionNumber = 1;
+    });
   }
 
   /*{
@@ -125,21 +124,28 @@ public class Chat {
 */
   }
 
-  public void sendRepeatableMessage(String offset) {
-    if (lastMessageSent.textEquals(offset)) {
-      String repeatedMessage = buildLastSentMessageWithRepeatition(offset);
-      client.updateMessage(lastMessageSent.getId(), repeatedMessage);
-      return;
-    }
-    Optional<String> maybeMessageId = client.send(chatId, offset);
-    if (maybeMessageId.isPresent()) {
-      String id = maybeMessageId.get();
-      updateLastSentMessage(id, offset);
+  public void sendRepeatableMessage(String text) {
+    if (lastMessageSent.textEquals(text)) {
+      client.deleteMessage(chatId, lastMessageSent.getId());
+
+      int repetitionNumber = lastMessageRepetitionNumber + 1;
+      String repeatedMessage = "(" + repetitionNumber + ") " + lastMessageSent.getText();
+      Optional<String> maybeMessageId = client.send(chatId, repeatedMessage);
+      if (maybeMessageId.isPresent()) {
+        String id = maybeMessageId.get();
+        lastMessageSent = new ChatMessageReference(id, text);
+        lastMessageRepetitionNumber = repetitionNumber;
+      }
+    } else {
+      int repetitionNumber = 1;
+      String message = lastMessageSent.getText();
+      Optional<String> maybeMessageId = client.send(chatId, message);
+      if (maybeMessageId.isPresent()) {
+        String id = maybeMessageId.get();
+        lastMessageSent = new ChatMessageReference(id, text);
+        lastMessageRepetitionNumber = repetitionNumber;
+      }
     }
   }
 
-  private String buildLastSentMessageWithRepeatition(String text) {
-    int i = lastMessageSent.incrementAndGetRepetition();
-    return "(" + i + ") " + text;
-  }
 }

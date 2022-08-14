@@ -18,7 +18,7 @@ public class BotRunner {
 
 
   public static void main(String[] args) {
-    TelegramClient client = new TelegramClient(new TelegramBot(BOT_NAME, BOT_TOKEN));
+    TelegramClient client = new TelegramClient(new Bot(BOT_NAME, BOT_TOKEN));
     Chat adminChat = new Chat(ADMIN_CHAT_ID, client);
 
     String offset = Chat.waitFirstUpdate(client);

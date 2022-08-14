@@ -4,22 +4,19 @@ import com.google.common.base.Preconditions;
 
 public class ChatMessageReference {
 
-  public static final ChatMessageReference EMPTY = new ChatMessageReference(null, null, true, 0);
+  public static final ChatMessageReference EMPTY = new ChatMessageReference(null, null, true);
   private final String id;
   private final String text;
   private final boolean isEmpty;
 
-  private int repetitionNumber = 0;
-
   public ChatMessageReference(String id, String text) {
-    this(id, text, false, 1);
+    this(id, text, false);
   }
 
-  private ChatMessageReference(String id, String text, boolean isEmpty, int repetitionNumber) {
+  private ChatMessageReference(String id, String text, boolean isEmpty) {
     this.id = id;
     this.text = text;
     this.isEmpty = isEmpty;
-    this.repetitionNumber = repetitionNumber;
   }
 
 
@@ -42,10 +39,6 @@ public class ChatMessageReference {
       return false;
     }
     return text.equals(otherText);
-  }
-
-  public int incrementAndGetRepetition() {
-    return ++repetitionNumber;
   }
 
 }

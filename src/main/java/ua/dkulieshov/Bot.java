@@ -7,14 +7,14 @@ import java.util.stream.Collectors;
 /**
  * Bot parameters. No actual logic.
  */
-public class TelegramBot {
+public class Bot {
 
   public final String selfLinkPrefix;
   public final String botCommandUrlPrefix;
   private final String botName;
   private final String botToken;
 
-  public TelegramBot(String botName, String botToken) {
+  public Bot(String botName, String botToken) {
     this.botName = botName;
     this.botToken = botToken;
     selfLinkPrefix = "https://t.me/" + botName;

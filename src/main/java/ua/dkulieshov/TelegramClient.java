@@ -9,15 +9,15 @@ import java.net.http.HttpResponse.BodySubscribers;
 import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.Optional;
-import ua.dkulieshov.TelegramBot.Cmd;
-import ua.dkulieshov.TelegramBot.Param;
+import ua.dkulieshov.Bot.Cmd;
+import ua.dkulieshov.Bot.Param;
 
 public class TelegramClient {
 
   public static final HttpClient HTTP_CLIENT = HttpClient.newHttpClient();
-  final TelegramBot bot;
+  final Bot bot;
 
-  public TelegramClient(TelegramBot bot) {
+  public TelegramClient(Bot bot) {
     this.bot = bot;
   }
 
