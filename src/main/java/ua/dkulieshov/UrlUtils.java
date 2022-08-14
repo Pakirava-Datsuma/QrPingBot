@@ -14,6 +14,10 @@ public class UrlUtils {
   }
 
   public static String buildParametersSuffix(Map<String, String> parameters) {
+    if (parameters.isEmpty()) {
+      return "";
+    }
+
     String parametersPrefix = "?";
     String keyValueDelimiter = "=";
     String keyValuePairsDelimiter = "&";
