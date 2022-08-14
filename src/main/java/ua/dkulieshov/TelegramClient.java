@@ -33,7 +33,6 @@ public class TelegramClient {
     try {
       response = HTTP_CLIENT.send(HttpRequest.newBuilder().GET().uri(URI.create(url)).build(),
           responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8));
-      //      System.out.println(" > > > : " + botId.mask(response.toString()));
       System.out.println(" > > > : " + botId.mask(response.body()));
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();

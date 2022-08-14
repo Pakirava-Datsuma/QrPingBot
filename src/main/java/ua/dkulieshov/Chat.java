@@ -125,12 +125,13 @@ public class Chat {
   }
 
   public void sendRepeatableMessage(String text) {
-    if (lastMessageSent.textEquals(text)) {
+    boolean toResend = lastMessageSent.textEquals(text);
+    if (toResend) {
       client.deleteMessage(chatId, lastMessageSent.getId());
-
       int repetitionNumber = lastMessageRepetitionNumber + 1;
-      String repeatedMessage = "(" + repetitionNumber + ") " + lastMessageSent.getText();
-      Optional<String> maybeMessageId = client.send(chatId, repeatedMessage);
+      String repeatedMessage = "(" + repetitionNumber + ") " + text;
+      Optional<String> maybeMessageId = client.send(chatId, repeatedMessage)
+          .flatMap(TelegramParser::parseSentMessageId);
       if (maybeMessageId.isPresent()) {
         String id = maybeMessageId.get();
         lastMessageSent = new ChatMessageReference(id, text);
@@ -138,8 +139,8 @@ public class Chat {
       }
     } else {
       int repetitionNumber = 1;
-      String message = lastMessageSent.getText();
-      Optional<String> maybeMessageId = client.send(chatId, message);
+      Optional<String> maybeMessageId = client.send(chatId, text)
+          .flatMap(TelegramParser::parseSentMessageId);
       if (maybeMessageId.isPresent()) {
         String id = maybeMessageId.get();
         lastMessageSent = new ChatMessageReference(id, text);
