@@ -3,6 +3,7 @@ package ua.dkulieshov;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -10,7 +11,6 @@ public class Chat {
 
   private final String chatId;
   private final TelegramClient client;
-  private TelegramParser parser;
   private ChatMessageReference lastMessageSent = ChatMessageReference.EMPTY;
   private int lastMessageRepetitionNumber = 0;
 
@@ -154,4 +154,5 @@ public class Chat {
     String filename = String.format("QR ping code for chat %s.png", chatId);
     client.sendPhoto(chatId, inputStream, filename);
   }
+
 }

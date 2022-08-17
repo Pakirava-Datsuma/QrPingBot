@@ -42,6 +42,10 @@ public class BotId {
     return s.replaceAll(botToken, "***");
   }
 
+  public String buildInviteLink() {
+    return buildBotStartLink(Map.of());
+  }
+
   enum Param {
     //@formatter:off
     START("start"),

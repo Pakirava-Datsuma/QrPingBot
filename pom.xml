@@ -2,9 +2,18 @@
 <project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xmlns="http://maven.apache.org/POM/4.0.0"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <artifactId>qr-ping-telegram-bot</artifactId>
 
   <dependencies>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>core</artifactId>
+      <version>3.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.google.zxing</groupId>
+      <artifactId>javase</artifactId>
+      <version>3.5.0</version>
+    </dependency>
     <dependency>
       <artifactId>guava</artifactId>
       <groupId>com.google.guava</groupId>
@@ -18,13 +27,15 @@
   </dependencies>
 
   <groupId>ua.dkulieshov</groupId>
-  <modelVersion>4.0.0</modelVersion>
+  <artifactId>qr-ping-telegram-bot</artifactId>
+  <version>1.0-SNAPSHOT</version>
   <name>QR Ping Telegram Bot</name>
+
+  <modelVersion>4.0.0</modelVersion>
   <properties>
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
   </properties>
 
-  <version>1.0-SNAPSHOT</version>
 
 </project>
