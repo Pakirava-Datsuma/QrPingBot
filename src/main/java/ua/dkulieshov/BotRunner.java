@@ -8,19 +8,10 @@ import java.util.List;
 
 public class BotRunner {
 
-
-  public static final String ADMIN_CHAT_ID_FILE = "chat.id";
-  public static final String ADMIN_CHAT_ID = loadStringFromFile(ADMIN_CHAT_ID_FILE);
-  public static final String BOT_NAME_FILE = "bot.name";
-  public static final String BOT_NAME = loadStringFromFile(BOT_NAME_FILE);
-
-  public static final String BOT_TOKEN_FILE = "bot.token";
-  public static final String BOT_TOKEN = loadStringFromFile(BOT_TOKEN_FILE);
-
-
   public static void main(String[] args) {
-    TelegramClient client = new TelegramClient(new BotId(BOT_NAME, BOT_TOKEN));
-    Chat adminChat = new Chat(ADMIN_CHAT_ID, client);
+    BotId botId = new BotId(BotLoader.BOT_NAME, BotLoader.BOT_TOKEN);
+    TelegramClient client = new TelegramClient(botId);
+    Chat adminChat = new Chat(BotLoader.ADMIN_CHAT_ID, client);
 
     adminChat.sendQrCode(InputStream.nullInputStream());
 
@@ -49,16 +40,6 @@ Exception in thread "main" java.lang.RuntimeException: NotImplementedException
 
   private static void answerToChat(String id) {
 
-  }
-
-
-  private static String loadStringFromFile(String file) {
-    try {
-      return Resources.readLines(Resources.getResource(file), StandardCharsets.UTF_8).stream()
-          .findFirst().get();
-    } catch (IOException e) {
-      throw new RuntimeException(e);
-    }
   }
 
 }
