@@ -46,6 +46,10 @@ public class BotId {
     return buildBotStartLink(Map.of());
   }
 
+  public String buildPingLink(String chatId) {
+    return buildStartLinkWithKeyNGroup("", chatId);
+  }
+
   enum Param {
     //@formatter:off
     START("start"),

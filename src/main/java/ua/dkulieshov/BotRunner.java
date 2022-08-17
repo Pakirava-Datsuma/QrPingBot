@@ -1,6 +1,5 @@
 package ua.dkulieshov;
 
-import java.awt.image.BufferedImage;
 import java.io.InputStream;
 import java.util.List;
 
@@ -11,11 +10,11 @@ public class BotRunner {
     TelegramClient client = new TelegramClient(botId);
     Chat adminChat = new Chat(BotLoader.ADMIN_CHAT_ID, client);
 
-    String link = botId.buildInviteLink();
+    String link = botId.buildPingLink(BotLoader.ADMIN_CHAT_ID);
     InputStream qrCodeImageStream = QrGenerator.generateQRCodeImage(link);
     adminChat.sendQrCode(qrCodeImageStream);
 
-    System.exit(0);
+    //    System.exit(0);
 
     String offset = Chat.waitFirstUpdate(client);
     adminChat.sendRepeatableMessage("Last offset found: " + offset);
