@@ -1,8 +1,11 @@
 package ua.dkulieshov;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public class TelegramParser {
@@ -10,6 +13,7 @@ public class TelegramParser {
 
   public static final String DELIMITER = "%";
   public static final String WRAP_1_WITH_DELIMITERS = DELIMITER + "$1" + DELIMITER;
+  private static ObjectMapper objectMapper = new ObjectMapper();
 
   public static Optional<String> parseUpdateOffset(String response) {
     return extractFirstRegexGroup(response, RegexPattern.UPDATE_ID);
@@ -42,6 +46,29 @@ public class TelegramParser {
     //4 %, message:bl2bla2b2}, ]
 
     return list;
+  }
+
+  public static List<String> parseChatIdsToPing(String responseWithUserCommands) {
+    List<String> chatIdsToPing = new ArrayList<>();
+    try {
+      Map map = objectMapper.readValue(responseWithUserCommands, Map.class);
+      List updates = (List) map.get("result");
+      for (Object update : updates) {
+        Map updateMap = (Map) update;
+        Map messageMap = (Map) updateMap.get("message");
+        String text = (String) messageMap.get("text");
+        //        Map chatMap = (Map) messageMap.get("chat");
+        //        Long chatId = (Long) chatMap.get("id");
+
+        String pingChatId = text.replaceAll("/start ", "");
+
+        chatIdsToPing.add(pingChatId);
+      }
+    } catch (JsonProcessingException e) {
+      throw new RuntimeException(e);
+    }
+
+    return chatIdsToPing;
   }
 
   public static Optional<String> parseSentMessageId(String responseWithSentMessageId) {

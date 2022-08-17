@@ -24,6 +24,11 @@
       <groupId>org.apache.httpcomponents</groupId>
       <version>4.5.13</version>
     </dependency>
+    <dependency>
+      <artifactId>jackson-databind</artifactId>
+      <groupId>com.fasterxml.jackson.core</groupId>
+      <version>2.12.1</version>
+    </dependency>
   </dependencies>
 
   <groupId>ua.dkulieshov</groupId>

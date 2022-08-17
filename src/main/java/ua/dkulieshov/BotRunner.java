@@ -22,16 +22,16 @@ public class BotRunner {
     while (true) {
       offset = String.valueOf(Long.parseLong(offset) + 1);
 
-      List<String> chatIds = Chat.waitUpdateChatIds(client, offset);
+      List<String> pingChatIds = Chat.waitPingChatIds(client, offset);
 
-      chatIds.forEach(id -> answerToChat(id));
+      for (String pingChatId : pingChatIds) {
+        Chat chat = new Chat(pingChatId, client);
+        chat.sendPing();
+      }
 
       adminChat.sendRepeatableMessage("No!");
     }
   }
 
-  private static void answerToChat(String id) {
-
-  }
 
 }

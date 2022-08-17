@@ -3,7 +3,6 @@ package ua.dkulieshov;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -42,6 +41,17 @@ public class Chat {
     List<String> chatIds = waitUntilOptionalIsPresent(() ->
         client.getMessageUpdates(offset)
             .map(TelegramParser::parseChatIds)
+            .filter(list -> !list.isEmpty())
+    );
+    //@formatter:on
+    return chatIds;
+  }
+
+  public static List<String> waitPingChatIds(TelegramClient client, String offset) {
+    //@formatter:off
+    List<String> chatIds = waitUntilOptionalIsPresent(() ->
+        client.getMessageUpdates(offset)
+            .map(TelegramParser::parseChatIdsToPing)
             .filter(list -> !list.isEmpty())
     );
     //@formatter:on
@@ -155,4 +165,7 @@ public class Chat {
     client.sendPhoto(chatId, inputStream, filename);
   }
 
+  public void sendPing() {
+    client.send(chatId, "ping"/* from: @zovitemenysemero */);
+  }
 }
