@@ -31,6 +31,7 @@ public class BotRunner {
           Chat targetChat = new Chat(task.targetChatId, client);
           targetChat.sendPing();
           Chat sourceChat = new Chat(task.sourceChatId, client);
+          // TODO: Why Reports do not stack?
           sourceChat.sendRepeatableMessage("Sent!");
         } else if (ChatTask.SEND_QR.equals(task.action)) {
           Chat chat = new Chat(task.targetChatId, client);
@@ -40,7 +41,7 @@ public class BotRunner {
         }
       }
 
-      adminChat.sendRepeatableMessage("No!");
+      adminChat.sendRepeatableMessage("Sent some ping");
     }
   }
 
