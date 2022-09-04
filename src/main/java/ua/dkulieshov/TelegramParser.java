@@ -60,13 +60,18 @@ public class TelegramParser {
           String text = (String) messageMap.get("text");
           boolean startWithChatId = text.startsWith("/start ");
           if (startWithChatId) {
-            String pingChatId = text.replaceAll("/start (.*)", "$1");
-            ChatTask task = new ChatTask(ChatTask.SEND_PING, pingChatId);
+            Map chatMap = (Map) messageMap.get("chat");
+            String sourceChatId = String.valueOf((Integer) chatMap.get("id"));
+
+            String targetChatId = text.replaceAll("/start (.*)", "$1");
+            ChatTask task = new ChatTask(ChatTask.SEND_PING, targetChatId, sourceChatId);
+
             botTasks.add(task);
           } else {
             Map chatMap = (Map) messageMap.get("chat");
             int chatId = (Integer) chatMap.get("id");
-            ChatTask task = new ChatTask(ChatTask.SEND_QR, String.valueOf(chatId));
+            String targetChatId = String.valueOf(chatId);
+            ChatTask task = new ChatTask(ChatTask.SEND_QR, targetChatId, targetChatId);
             botTasks.add(task);
           }
         }

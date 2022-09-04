@@ -27,10 +27,13 @@ public class BotRunner {
       List<ChatTask> chatTasks = Chat.waitChatTasks(client, offset);
 
       for (ChatTask task : chatTasks) {
-        Chat chat = new Chat(task.chatId, client);
         if (ChatTask.SEND_PING.equals(task.action)) {
-          chat.sendPing();
+          Chat targetChat = new Chat(task.targetChatId, client);
+          targetChat.sendPing();
+          Chat sourceChat = new Chat(task.sourceChatId, client);
+          sourceChat.sendRepeatableMessage("Sent!");
         } else if (ChatTask.SEND_QR.equals(task.action)) {
+          Chat chat = new Chat(task.targetChatId, client);
           chat.sendSelfPingQrCode();
         } else {
           throw new RuntimeException("Unknown chat task: " + task.action);
