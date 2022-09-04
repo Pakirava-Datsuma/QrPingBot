@@ -1,0 +1,98 @@
+<code_scheme name="QrPingBot" version="173">
+  <JavaCodeStyleSettings>
+    <option name="GENERATE_FINAL_PARAMETERS" value="true"/>
+    <option name="INSERT_INNER_CLASS_IMPORTS" value="true"/>
+    <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999"/>
+    <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999"/>
+    <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
+      <value/>
+    </option>
+    <option name="IMPORT_LAYOUT_TABLE">
+      <value>
+        <emptyLine/>
+        <package name="" static="true" withSubpackages="true"/>
+        <package name="" static="false" withSubpackages="true"/>
+      </value>
+    </option>
+  </JavaCodeStyleSettings>
+  <codeStyleSettings language="Groovy">
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+      <option name="TAB_SIZE" value="2"/>
+    </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="HTML">
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+      <option name="TAB_SIZE" value="2"/>
+    </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="JAVA">
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="2"/>
+      <option name="TAB_SIZE" value="2"/>
+    </indentOptions>
+    <option name="METHOD_CALL_CHAIN_WRAP" value="5"/>
+    <option name="KEEP_SIMPLE_CLASSES_IN_ONE_LINE" value="true"/>
+    <option name="METHOD_PARAMETERS_WRAP" value="5"/>
+  </codeStyleSettings>
+  <codeStyleSettings language="JSON">
+    <indentOptions>
+      <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+      <option name="TAB_SIZE" value="2"/>
+    </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="XML">
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+      <option name="TAB_SIZE" value="2"/>
+    </indentOptions>
+  </codeStyleSettings>
+  <codeStyleSettings language="kotlin">
+    <indentOptions>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="CONTINUATION_INDENT_SIZE" value="4"/>
+      <option name="TAB_SIZE" value="2"/>
+    </indentOptions>
+  </codeStyleSettings>
+  <option name="OTHER_INDENT_OPTIONS">
+    <value>
+      <option name="INDENT_SIZE" value="2"/>
+      <option name="TAB_SIZE" value="2"/>
+    </value>
+  </option>
+  <option name="INSERT_INNER_CLASS_IMPORTS" value="true"/>
+  <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999"/>
+  <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="9999"/>
+  <option name="PACKAGES_TO_USE_IMPORT_ON_DEMAND">
+    <value>
+      <package name="java.awt" static="false" withSubpackages="false"/>
+      <package name="javax.swing" static="false" withSubpackages="false"/>
+      <package name="org.unit.Assert" static="false" withSubpackages="true"/>
+      <package name="org.mockito.Matchers" static="false" withSubpackages="true"/>
+      <package name="junit.framework.Assert" static="false" withSubpackages="true"/>
+      <package name="org.mockito.Mockito" static="false" withSubpackages="true"/>
+    </value>
+  </option>
+  <option name="IMPORT_LAYOUT_TABLE">
+    <value>
+      <emptyLine/>
+      <emptyLine/>
+      <emptyLine/>
+      <emptyLine/>
+      <emptyLine/>
+      <package name="" static="true" withSubpackages="true"/>
+      <package name="java" static="false" withSubpackages="true"/>
+      <package name="javax" static="false" withSubpackages="true"/>
+      <package name="org" static="false" withSubpackages="true"/>
+      <package name="com" static="false" withSubpackages="true"/>
+      <package name="" static="false" withSubpackages="true"/>
+    </value>
+  </option>
+  <option name="RIGHT_MARGIN" value="200"/>
+  <option name="SOFT_MARGINS" value="120,200"/>
+</code_scheme>
