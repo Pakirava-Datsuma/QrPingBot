@@ -8,7 +8,7 @@ import java.util.function.Supplier;
 
 public class Chat {
 
-  private final String chatId;
+  final String chatId;
   private final TelegramClient client;
   private ChatMessageReference lastMessageSent = ChatMessageReference.EMPTY;
   private int lastMessageRepetitionNumber = 0;
@@ -159,12 +159,14 @@ public class Chat {
     }
   }
 
-  public void sendQrCode(InputStream inputStream) {
-    String filename = String.format("QR ping code for chat %s.png", chatId);
-    client.sendPhoto(chatId, inputStream, filename);
-  }
-
   public void sendPing() {
     client.send(chatId, "ping"/* from: @zovitemenysemero */);
+  }
+
+  public void sendSelfPingQrCode() throws Exception {
+    String link = client.botId.buildPingLink(chatId);
+    InputStream qrCodeImageStream = QrGenerator.generateQRCodeImage(link);
+    String filename = String.format("QR ping code for chat %s.png", chatId);
+    client.sendPhoto(chatId, qrCodeImageStream, filename);
   }
 }

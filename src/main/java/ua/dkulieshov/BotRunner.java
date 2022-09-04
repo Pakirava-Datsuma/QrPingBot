@@ -1,6 +1,5 @@
 package ua.dkulieshov;
 
-import java.io.InputStream;
 import java.util.List;
 
 public class BotRunner {
@@ -11,8 +10,7 @@ public class BotRunner {
     System.out.println(client.getMe());
 
     Chat adminChat = new Chat(BotLoader.ADMIN_CHAT_ID, client);
-
-    sendQrCode(botId, adminChat); // TODO: send qr on "/start"
+    adminChat.sendSelfPingQrCode();
 
     String offset = Chat.waitFirstUpdate(client);
     adminChat.sendRepeatableMessage("Last offset found: " + offset);
@@ -33,7 +31,7 @@ public class BotRunner {
         if (ChatTask.SEND_PING.equals(task.action)) {
           chat.sendPing();
         } else if (ChatTask.SEND_QR.equals(task.action)) {
-          sendQrCode(botId, chat);
+          chat.sendSelfPingQrCode();
         } else {
           throw new RuntimeException("Unknown chat task: " + task.action);
         }
@@ -45,11 +43,5 @@ public class BotRunner {
 
   private static String increment(String offset) {
     return String.valueOf(Long.parseLong(offset) + 1);
-  }
-
-  private static void sendQrCode(BotId botId, Chat adminChat) throws Exception {
-    String link = botId.buildPingLink(BotLoader.ADMIN_CHAT_ID);
-    InputStream qrCodeImageStream = QrGenerator.generateQRCodeImage(link);
-    adminChat.sendQrCode(qrCodeImageStream);
   }
 }
