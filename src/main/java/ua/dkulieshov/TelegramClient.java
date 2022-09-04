@@ -32,10 +32,10 @@ public class TelegramClient {
 
   public Optional<String> getUpdates() {
     String url = botId.buildCmdUrl(Cmd.GET_UPDATES);
-    return get(url);
+    return doGet(url);
   }
 
-  private Optional<String> get(String url) {
+  private Optional<String> doGet(String url) {
     HttpRequest request = HttpRequest.newBuilder().GET().uri(URI.create(url)).build();
     return execute(url, request);
   }
@@ -46,7 +46,8 @@ public class TelegramClient {
     HttpResponse<String> response = null;
     try {
       response = HTTP_CLIENT.send(request,
-          responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8));
+                                  responseInfo -> BodySubscribers.ofString(StandardCharsets.UTF_8)
+      );
       System.out.println(" > > > : " + botId.mask(response.body()));
     } catch (IOException | InterruptedException e) {
       e.printStackTrace();
@@ -75,8 +76,9 @@ public class TelegramClient {
 
   public void deleteMessage(String chatId, String messageId) {
     String url = botId.buildCmdUrl(Cmd.DELETE_MESSAGE,
-        Map.of(Param.CHAT_ID, chatId, Param.MESSAGE_ID, messageId));
-    Optional<String> maybeResponse = get(url);
+                                   Map.of(Param.CHAT_ID, chatId, Param.MESSAGE_ID, messageId)
+    );
+    Optional<String> maybeResponse = doGet(url);
     boolean notDeleted = maybeResponse.filter(response -> response.contains("true")).isEmpty();
     if (notDeleted) {
       System.out.println("\n! ! ! ! Not deleted ! ! !\n");
@@ -85,13 +87,13 @@ public class TelegramClient {
 
   public Optional<String> getMessageUpdates(String offset) {
     String url = botId.buildCmdUrl(Cmd.GET_UPDATES, Map.of(Param.OFFSET, offset));
-    return get(url);
+    return doGet(url);
   }
 
   public Optional<String> send(String chatId, String message) {
-    String url = botId.buildCmdUrl(Cmd.SEND_MESSAGE,
-        Map.of(Param.CHAT_ID, chatId, Param.TEXT, message));
-    return get(url);
+    String url =
+        botId.buildCmdUrl(Cmd.SEND_MESSAGE, Map.of(Param.CHAT_ID, chatId, Param.TEXT, message));
+    return doGet(url);
   }
 
   public void updateMessage(String id, String repeatedMessage) {
@@ -105,14 +107,18 @@ public class TelegramClient {
 
   private Optional<String> postPhoto(String url, InputStream inputStream, String filename) {
     HttpEntity entity = MultipartEntityBuilder.create()
-        // FORM
-        //        .addPart("name", new StringBody("<Spring Cloud>",
-        //            ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8)))
-        // JSON
-        //        .addPart("info", new StringBody("{\"site\": \"https://www.springcloud.io\"}",
-        //            ContentType.APPLICATION_JSON))
-        // FILE
-        .addBinaryBody(Param.PHOTO.getKey(), inputStream, ContentType.IMAGE_PNG, filename).build();
+                                              // FORM
+                                              //        .addPart("name", new StringBody("<Spring Cloud>",
+                                              //            ContentType.create("application/x-www-form-urlencoded", StandardCharsets.UTF_8)))
+                                              // JSON
+                                              //        .addPart("info", new StringBody("{\"site\": \"https://www.springcloud.io\"}",
+                                              //            ContentType.APPLICATION_JSON))
+                                              // FILE
+                                              .addBinaryBody(Param.PHOTO.getKey(),
+                                                             inputStream,
+                                                             ContentType.IMAGE_PNG,
+                                                             filename
+                                              ).build();
     return postEntity(url, entity);
   }
 
@@ -134,18 +140,25 @@ public class TelegramClient {
         } catch (IOException e) {
           e.printStackTrace();
         }
-
       }).start();
 
       HttpRequest request = HttpRequest.newBuilder(URI.create(url))
-          // The Content-Type header is important, don't forget to set it.
-          .header(HttpHeaders.CONTENT_TYPE, httpEntity.getContentType().getValue())
-          // Reads data from a pipeline stream.
-          .POST(BodyPublishers.ofInputStream(() -> Channels.newInputStream(pipe.source()))).build();
+                                       // The Content-Type header is important, don't forget to set it.
+                                       .header(HttpHeaders.CONTENT_TYPE,
+                                               httpEntity.getContentType().getValue()
+                                       )
+                                       // Reads data from a pipeline stream.
+                                       .POST(BodyPublishers.ofInputStream(() -> Channels.newInputStream(
+                                           pipe.source()))).build();
 
       return execute(url, request);
     } catch (Exception e) {
       return Optional.empty();
     }
+  }
+
+  public String getMe() {
+    String url = botId.buildCmdUrl(Cmd.GET_ME);
+    return doGet(url).orElseThrow();
   }
 }

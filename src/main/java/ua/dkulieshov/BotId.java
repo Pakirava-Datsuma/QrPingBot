@@ -47,7 +47,9 @@ public class BotId {
   }
 
   public String buildPingLink(String chatId) {
-    return buildStartLinkWithKeyNGroup("", chatId);
+    String url = buildStartLinkWithKeyNGroup("", chatId);
+    System.out.println("Ping link is built: " + url);
+    return url;
   }
 
   enum Param {
@@ -61,7 +63,6 @@ public class BotId {
     PHOTO("photo"),
     ;//@formatter:on
 
-
     private final String key;
 
     Param(String key) {
@@ -69,7 +70,9 @@ public class BotId {
     }
 
     public static Map<String, String> transformKeys(Map<Param, String> paramMap) {
-      Map<String, String> map = paramMap.entrySet().stream()
+      Map<String, String> map = paramMap
+          .entrySet()
+          .stream()
           .collect(Collectors.toMap(e -> e.getKey().key, e -> e.getValue()));
       return map;
     }
@@ -84,8 +87,8 @@ public class BotId {
     SEND_MESSAGE("/sendMessage"),
     GET_UPDATES("/getUpdates"),
     DELETE_MESSAGE("/deleteMessage"),
-    SEND_PHOTO("/sendPhoto")
-    ;//@formatter:on
+    SEND_PHOTO("/sendPhoto"),
+    GET_ME("/getMe");//@formatter:on
 
     private static final String SLASH_PREFIX = "/";
     private final String path;
