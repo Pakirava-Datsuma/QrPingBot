@@ -10,7 +10,6 @@ import java.util.Optional;
 
 public class TelegramParser {
 
-
   public static final String DELIMITER = "%";
   public static final String WRAP_1_WITH_DELIMITERS = DELIMITER + "$1" + DELIMITER;
   private static ObjectMapper objectMapper = new ObjectMapper();
@@ -21,8 +20,8 @@ public class TelegramParser {
 
   private static Optional<String> extractFirstRegexGroup(String response, RegexPattern regex) {
     String[] parts = response.replaceAll(regex.regex, WRAP_1_WITH_DELIMITERS).split(DELIMITER);
-    Optional<String> maybeSecondPart = Optional.of(parts).filter(array -> array.length > 1)
-        .map(array -> array[1]);
+    Optional<String> maybeSecondPart =
+        Optional.of(parts).filter(array -> array.length > 1).map(array -> array[1]);
 
     if (maybeSecondPart.isEmpty()) {
       System.out.println("Not found first group. Parts: " + Arrays.toString(parts));
@@ -32,8 +31,9 @@ public class TelegramParser {
   }
 
   public static List<String> parseChatIds(String responseWithChatMessages) {
-    String[] parts = responseWithChatMessages.replaceAll(RegexPattern.CHAT_ID.regex,
-        WRAP_1_WITH_DELIMITERS).split(DELIMITER);
+    String[] parts = responseWithChatMessages
+        .replaceAll(RegexPattern.CHAT_ID.regex, WRAP_1_WITH_DELIMITERS)
+        .split(DELIMITER);
 
     List<String> list = new ArrayList<>();
     for (int i = 1; i < parts.length; i = i + 2) {
@@ -48,27 +48,24 @@ public class TelegramParser {
     return list;
   }
 
-  public static List<String> parseChatIdsToPing(String responseWithUserCommands) {
-    List<String> chatIdsToPing = new ArrayList<>();
+  public static List<ChatTask> parseChatTasks(String responseWithUserCommands) {
+    List<ChatTask> botTasks = new ArrayList<>();
     try {
       Map map = objectMapper.readValue(responseWithUserCommands, Map.class);
-      List updates = (List) map.get("result");
-      for (Object update : updates) {
-        Map updateMap = (Map) update;
-        Map messageMap = (Map) updateMap.get("message");
+      List<Map> updates = (List<Map>) map.get("result");
+
+      for (Map update : updates) {
+        Map messageMap = (Map) update.get("message");
         String text = (String) messageMap.get("text");
-        //        Map chatMap = (Map) messageMap.get("chat");
-        //        Long chatId = (Long) chatMap.get("id");
-
         String pingChatId = text.replaceAll("/start ", "");
-
-        chatIdsToPing.add(pingChatId);
+        ChatTask task = new ChatTask(ChatTask.SEND_PING, pingChatId);
+        botTasks.add(task);
       }
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
     }
 
-    return chatIdsToPing;
+    return botTasks;
   }
 
   public static Optional<String> parseSentMessageId(String responseWithSentMessageId) {
@@ -87,6 +84,5 @@ public class TelegramParser {
     RegexPattern(String regex) {
       this.regex = regex;
     }
-
   }
 }

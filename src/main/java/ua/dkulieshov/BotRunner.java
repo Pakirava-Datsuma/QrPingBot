@@ -26,11 +26,15 @@ public class BotRunner {
       // TODO: show who is "@from" (do we have an API call to send AliceId to Bob if Bob knows Alice)
       // TODO: replace BOT_NAME print on start with t.me/getMe
       // TODO: on add to chat generate qr_code there
-      List<String> pingChatIds = Chat.waitPingChatIds(client, offset);
+      List<ChatTask> chatTasks = Chat.waitChatTasks(client, offset);
 
-      for (String pingChatId : pingChatIds) {
-        Chat chat = new Chat(pingChatId, client);
-        chat.sendPing();
+      for (ChatTask task : chatTasks) {
+        Chat chat = new Chat(task.chatId, client);
+        if (ChatTask.SEND_PING.equals(task.action)) {
+          chat.sendPing();
+        } else {
+          throw new RuntimeException("Unknown chat task: " + task.action);
+        }
       }
 
       adminChat.sendRepeatableMessage("No!");

@@ -19,8 +19,9 @@ public class Chat {
   }
 
   public static String waitFirstUpdate(TelegramClient client) {
-    return waitUntilOptionalIsPresent(
-        () -> client.getUpdates().flatMap(TelegramParser::parseUpdateOffset));
+    return waitUntilOptionalIsPresent(() -> client
+        .getUpdates()
+        .flatMap(TelegramParser::parseUpdateOffset));
   }
 
   private static <T> T waitUntilOptionalIsPresent(Supplier<Optional<T>> responder) {
@@ -38,24 +39,22 @@ public class Chat {
 
   public static List<String> waitUpdateChatIds(TelegramClient client, String offset) {
     //@formatter:off
-    List<String> chatIds = waitUntilOptionalIsPresent(() ->
-        client.getMessageUpdates(offset)
-            .map(TelegramParser::parseChatIds)
-            .filter(list -> !list.isEmpty())
-    );
+    List<String> chatIds = waitUntilOptionalIsPresent(() -> client
+        .getMessageUpdates(offset)
+        .map(TelegramParser::parseChatIds)
+        .filter(list -> !list.isEmpty()));
     //@formatter:on
     return chatIds;
   }
 
-  public static List<String> waitPingChatIds(TelegramClient client, String offset) {
+  public static List<ChatTask> waitChatTasks(TelegramClient client, String offset) {
     //@formatter:off
-    List<String> chatIds = waitUntilOptionalIsPresent(() ->
-        client.getMessageUpdates(offset)
-            .map(TelegramParser::parseChatIdsToPing)
-            .filter(list -> !list.isEmpty())
-    );
+    List<ChatTask> chatTasks = waitUntilOptionalIsPresent(() -> client
+        .getMessageUpdates(offset)
+        .map(TelegramParser::parseChatTasks)
+        .filter(list -> !list.isEmpty()));
     //@formatter:on
-    return chatIds;
+    return chatTasks;
   }
 
   /*{
@@ -141,8 +140,8 @@ public class Chat {
       client.deleteMessage(chatId, lastMessageSent.getId());
       int repetitionNumber = lastMessageRepetitionNumber + 1;
       String repeatedMessage = "(" + repetitionNumber + ") " + text;
-      Optional<String> maybeMessageId = client.send(chatId, repeatedMessage)
-          .flatMap(TelegramParser::parseSentMessageId);
+      Optional<String> maybeMessageId =
+          client.send(chatId, repeatedMessage).flatMap(TelegramParser::parseSentMessageId);
       if (maybeMessageId.isPresent()) {
         String id = maybeMessageId.get();
         lastMessageSent = new ChatMessageReference(id, text);
@@ -150,8 +149,8 @@ public class Chat {
       }
     } else {
       int repetitionNumber = 1;
-      Optional<String> maybeMessageId = client.send(chatId, text)
-          .flatMap(TelegramParser::parseSentMessageId);
+      Optional<String> maybeMessageId =
+          client.send(chatId, text).flatMap(TelegramParser::parseSentMessageId);
       if (maybeMessageId.isPresent()) {
         String id = maybeMessageId.get();
         lastMessageSent = new ChatMessageReference(id, text);
