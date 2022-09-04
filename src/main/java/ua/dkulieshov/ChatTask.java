@@ -3,6 +3,7 @@ package ua.dkulieshov;
 public class ChatTask {
 
   public static final String SEND_PING = "SEND_PING";
+  public static final String SEND_QR = "SEND_QR";
   final String action;
   final String chatId;
 

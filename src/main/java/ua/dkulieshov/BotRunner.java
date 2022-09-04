@@ -32,6 +32,8 @@ public class BotRunner {
         Chat chat = new Chat(task.chatId, client);
         if (ChatTask.SEND_PING.equals(task.action)) {
           chat.sendPing();
+        } else if (ChatTask.SEND_QR.equals(task.action)) {
+          sendQrCode(botId, chat);
         } else {
           throw new RuntimeException("Unknown chat task: " + task.action);
         }

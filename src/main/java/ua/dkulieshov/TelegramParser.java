@@ -55,11 +55,21 @@ public class TelegramParser {
       List<Map> updates = (List<Map>) map.get("result");
 
       for (Map update : updates) {
-        Map messageMap = (Map) update.get("message");
-        String text = (String) messageMap.get("text");
-        String pingChatId = text.replaceAll("/start ", "");
-        ChatTask task = new ChatTask(ChatTask.SEND_PING, pingChatId);
-        botTasks.add(task);
+        if (update.containsKey(TelegramEvent.MESSAGE)) {
+          Map messageMap = (Map) update.get(TelegramEvent.MESSAGE);
+          String text = (String) messageMap.get("text");
+          boolean startWithChatId = text.startsWith("/start ");
+          if (startWithChatId) {
+            String pingChatId = text.replaceAll("/start (.*)", "$1");
+            ChatTask task = new ChatTask(ChatTask.SEND_PING, pingChatId);
+            botTasks.add(task);
+          } else {
+            Map chatMap = (Map) messageMap.get("chat");
+            int chatId = (Integer) chatMap.get("id");
+            ChatTask task = new ChatTask(ChatTask.SEND_QR, String.valueOf(chatId));
+            botTasks.add(task);
+          }
+        }
       }
     } catch (JsonProcessingException e) {
       throw new RuntimeException(e);
